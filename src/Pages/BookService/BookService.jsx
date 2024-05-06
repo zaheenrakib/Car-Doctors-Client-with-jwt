@@ -6,7 +6,7 @@ import { AuthContext } from "../../Providers/AuthProvider";
 const BookService = () => {
 
     const service = useLoaderData();
-    const { title, _id ,price} = service;
+    const { title, _id ,price, img} = service;
 
     const {user} = useContext(AuthContext);
 
@@ -16,38 +16,35 @@ const BookService = () => {
         const name = form.name.value;
         const date = form.date.value;
         const email = user?.email;
-        const order = {
+        const booking = {
             customerName: name,
             email,
             date,
-            service: _id,
+            img,
+            service: title,
+            service_id: _id,
             price:price
         }
 
-        console.log(order);
+        console.log(booking);
+        fetch('http://localhost:5000/bookings', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(booking)
+        })
+           .then(res => res.json())
+           .then(data => {
+                if(data.insertedId){
+                    alert('service book successfully')
+                }
+            })
+           .catch(err => {
+                console.log(err);
+            })
 
-        // const dueAmount = form.dueAmount.value;
-        // const serviceId = _id;
-        // const data = { name, date, email, dueAmount, serviceId };
-        // fetch('http://localhost:5000/book-service', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify(data)
-        // })
-        //    .then(res => res.json())
-        //    .then(data => {
-        //         if (data.error) {
-        //             console.log(data.error);
-        //         }
-        //         else {
-        //             console.log(data);
-        //         }
-        //     })
-        //    .catch(err => {
-        //         console.log(err);
-        //     })
+
     }
 
     return (
